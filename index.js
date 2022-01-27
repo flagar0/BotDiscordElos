@@ -35,7 +35,6 @@ client.on("message", async function(message) {
       var flex = true;
     }else{ return;}
     let elos = await pegaElo(id,flex);
-    console.log(elos);
     let img = pegaFoto(elos);
 
 
@@ -73,8 +72,7 @@ if (command === "flex" && args[0] != null) {
   let id = await pegaID(nick);
   if(id =="bug"){message.reply("Jogador nao encontrado"); return;}
   let elos = await pegaElo(id,true);
-  
-  console.log(elos);
+
   let img = pegaFoto(elos);
 
 
@@ -112,7 +110,6 @@ if (command === "solo" && args[0] != null) {
   if(id =="bug"){message.reply("Jogador nao encontrado"); return;}
   let elos = await pegaElo(id,false);
   
-  console.log(elos);
   let img = pegaFoto(elos);
 
 
