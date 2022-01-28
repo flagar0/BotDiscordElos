@@ -3,7 +3,8 @@ const config = require("./config.json");
 const axios = require('axios');
 const { MessageEmbed } = require('discord.js');
 const { exit } = require("process");
-
+var timer=false;
+var minutos=30;
 const client = new Discord.Client({
     intents: [
         Discord.Intents.FLAGS.GUILDS,
@@ -15,6 +16,9 @@ const prefix = "++";
 
 client.on('ready', () => {
   console.log("Estou Vivo");  
+
+  
+  setInterval(Atualizacao,(1000 * 60 *minutos));
 });
 
 client.on("message", async function(message) {
@@ -141,6 +145,27 @@ if (command === "solo" && args[0] != null) {
   message.reply({ embeds: [Tabela] });
 } 
 ///////////////////////////////////////////////////////////////////////////////todos
+
+if (command === "timer") {
+  switch(args[0]){
+    case "off":
+      message.reply("Timer Desligado!");
+      timer =false;
+    break;
+
+    case "on":
+      message.reply("Timer Ligado!");
+      timer =true;
+    break;
+
+    default:
+      return;
+  }
+}
+
+
+
+
 });
 
 
@@ -302,5 +327,12 @@ function ArrumaNick(nick){
   }
   return nome;
 }}
+
+function Atualizacao(){
+  var canal = client.channels.cache.get('934605487939412019');
+    if(timer == true){
+  canal.send("teste");
+}
+}
 
 client.login(config.BOT_TOKEN);
