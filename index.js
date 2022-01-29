@@ -5,7 +5,7 @@ const { MessageEmbed } = require('discord.js');
 const { exit } = require("process");
 const { ThirdPartyCode } = require("twisted/dist/apis/lol/thirdPartyCode/thirdPartyCode");
 var timer=false;
-var minutos=10;
+var minutos=2;
 var ativo=false;
 
 const client = new Discord.Client({
@@ -331,7 +331,7 @@ function ArrumaNick(nick){
   return nome;
 }}
 
-function Atualizacao(){
+async function Atualizacao(){
   var data = new Date();
   var hora =  data.getHours();
 console.log(hora);
@@ -340,7 +340,37 @@ console.log(hora);
   
     if(timer == true  && hora==12 && ativo==false){
       ativo= true;
-  canal.send("teste");
+      let id = await pegaID('chickenfrango');
+      let elos = await pegaElo(id,false);
+      let img = pegaFoto(elos);
+  
+  
+      if(elos.miniSeries !=null){
+        var pro = elos.miniSeries.progress.replace(/L/g, 'X');
+        var md5 = pro.replace(/W/g, 'V');
+        var md52 = md5.replace(/N/g, '-')
+        var Tabela = new MessageEmbed()
+        .setColor('#009911')
+        .setTitle(elos.summonerName)
+        .setDescription(elos.tier + ' ' + elos.rank)
+        .addField('Vitorias / Derrotas', (elos.wins +' / '+ elos.losses), true)
+        .addField('Total', ((elos.wins+elos.losses).toString()), true)
+        .addField('Pontos', elos.leaguePoints.toString(), true)
+        .setImage(img)
+        .setFooter({ text: 'MD5: '+ md52})
+  
+      }else{
+        var Tabela = new MessageEmbed()
+        .setColor('#009911')
+        .setTitle(elos.summonerName)
+        .setDescription(elos.tier + ' ' + elos.rank)
+        .addField('Vitorias / Derrotas', (elos.wins +' / '+ elos.losses), true)
+        .addField('Total', ((elos.wins+elos.losses).toString()), true)
+        .addField('Pontos', elos.leaguePoints.toString(), true)
+        .setImage(img)
+      
+      }
+      canal.send({ embeds: [Tabela] });
 }
 }
 
