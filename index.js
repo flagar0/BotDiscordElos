@@ -194,6 +194,7 @@ async function pegaElo(id,flex){
   
   let response = await axios.get('https://br1.api.riotgames.com/lol/league/v4/entries/by-summoner/'+id+'?api_key='+config.API_TOKEN)
   let dados = response.data
+  if(dados[1]==undefined){return dados[0]}
   if(flex == false && dados[0].queueType === "RANKED_SOLO_5x5"){
     return dados[0];
   } else if(flex == false && dados[1].queueType === "RANKED_SOLO_5x5"){
