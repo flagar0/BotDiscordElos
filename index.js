@@ -3,8 +3,11 @@ const config = require("./config.json");
 const axios = require('axios');
 const { MessageEmbed } = require('discord.js');
 const { exit } = require("process");
+const { ThirdPartyCode } = require("twisted/dist/apis/lol/thirdPartyCode/thirdPartyCode");
 var timer=false;
-var minutos=30;
+var minutos=10;
+var ativo=false;
+
 const client = new Discord.Client({
     intents: [
         Discord.Intents.FLAGS.GUILDS,
@@ -329,8 +332,14 @@ function ArrumaNick(nick){
 }}
 
 function Atualizacao(){
+  var data = new Date();
+  var hora =  data.getHours();
+console.log(hora);
+  if(hora !=12){ ativo=false}
   var canal = client.channels.cache.get('934605487939412019');
-    if(timer == true){
+  
+    if(timer == true  && hora==12 && ativo==false){
+      ativo= true;
   canal.send("teste");
 }
 }
