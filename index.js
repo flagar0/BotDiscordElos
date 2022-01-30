@@ -4,8 +4,8 @@ const axios = require('axios');
 const { MessageEmbed } = require('discord.js');
 const { exit } = require("process");
 const { ThirdPartyCode } = require("twisted/dist/apis/lol/thirdPartyCode/thirdPartyCode");
-var timer=false;
-var minutos=2;
+var timer=true;
+var minutos=20;
 var ativo=false;
 
 const client = new Discord.Client({
@@ -337,11 +337,11 @@ async function Atualizacao(){
   var hora =  data.getHours();
 console.log(hora);
   if(hora !=12){ ativo=false}
-  var canal = client.channels.cache.get('934605487939412019');
+  var canal = client.channels.cache.get('792471661277741116');
   
     if(timer == true  && hora==12 && ativo==false){
       ativo= true;
-      let id = await pegaID('chickenfrango');
+      let id = await pegaID('Rei%20dos%20reboco%200');
       let elos = await pegaElo(id,false);
       let img = pegaFoto(elos);
   
