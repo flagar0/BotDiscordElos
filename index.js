@@ -7,6 +7,7 @@ const { ThirdPartyCode } = require("twisted/dist/apis/lol/thirdPartyCode/thirdPa
 var timer=true;
 var minutos=20;
 var ativo=false;
+var version;
 
 const client = new Discord.Client({
     intents: [
@@ -19,7 +20,7 @@ const prefix = "++";
 
 client.on('ready', () => {
   console.log("Estou Vivo");  
-
+  pegaVersao();
   
   setInterval(Atualizacao,(1000 * 60 *minutos));
 });
@@ -35,13 +36,13 @@ client.on("message", async function(message) {
 
 //////////////////////////////////////////////////////////////////bastos
   if (command === "bastos" && args[0] != null) {
-    let id = await pegaID('Rei%20dos%20reboco%200');
+    let inf = await pegaID('Rei%20dos%20reboco%200');
     if(args[0].toLowerCase() ==="solo"){
       var flex = false;
     } else if (args[0].toLowerCase() ==="flex"){
       var flex = true;
     }else{ return;}
-    let elos = await pegaElo(id,flex);
+    let elos = await pegaElo(inf.id,flex);
     let img = pegaFoto(elos);
 
 
@@ -51,7 +52,7 @@ client.on("message", async function(message) {
       var md52 = md5.replace(/N/g, '-')
       var Tabela = new MessageEmbed()
       .setColor('#009911')
-      .setTitle(elos.summonerName)
+      .setAuthor({ name: elos.summonerName, iconURL: 'https://ddragon.leagueoflegends.com/cdn/'+version+'/img/profileicon/'+ inf.profileIconId+'.png'})
       .setDescription(elos.tier + ' ' + elos.rank)
       .addField('Vitorias / Derrotas', (elos.wins +' / '+ elos.losses), true)
       .addField('Total', ((elos.wins+elos.losses).toString()), true)
@@ -62,7 +63,7 @@ client.on("message", async function(message) {
     }else{
       var Tabela = new MessageEmbed()
       .setColor('#009911')
-      .setTitle(elos.summonerName)
+      .setAuthor({ name: elos.summonerName, iconURL: 'https://ddragon.leagueoflegends.com/cdn/'+version+'/img/profileicon/'+ inf.profileIconId+'.png'})
       .setDescription(elos.tier + ' ' + elos.rank)
       .addField('Vitorias / Derrotas', (elos.wins +' / '+ elos.losses), true)
       .addField('Total', ((elos.wins+elos.losses).toString()), true)
@@ -76,9 +77,9 @@ client.on("message", async function(message) {
 ///////////////////////////////////////////////////////////////////////////////todos
 if (command === "flex" && args[0] != null) {
   let nick = ArrumaNick(args);
-  let id = await pegaID(nick);
-  if(id =="bug"){message.reply("Jogador nao encontrado"); return;}
-  let elos = await pegaElo(id,true);
+  let inf = await pegaID(nick);
+  if(inf =="bug"){message.reply("Jogador nao encontrado"); return;}
+  let elos = await pegaElo(inf.id,true);
 
   let img = pegaFoto(elos);
 
@@ -89,7 +90,7 @@ if (command === "flex" && args[0] != null) {
     var md52 = md5.replace(/N/g, '-')
     var Tabela = new MessageEmbed()
     .setColor('#009911')
-    .setTitle(elos.summonerName)
+    .setAuthor({ name: elos.summonerName, iconURL: 'https://ddragon.leagueoflegends.com/cdn/'+version+'/img/profileicon/'+ inf.profileIconId+'.png'})
     .setDescription(elos.tier + ' ' + elos.rank)
     .addField('Vitorias / Derrotas', (elos.wins +' / '+ elos.losses), true)
     .addField('Total', ((elos.wins+elos.losses).toString()), true)
@@ -100,7 +101,7 @@ if (command === "flex" && args[0] != null) {
   }else{
     var Tabela = new MessageEmbed()
     .setColor('#009911')
-    .setTitle(elos.summonerName)
+    .setAuthor({ name: elos.summonerName, iconURL: 'https://ddragon.leagueoflegends.com/cdn/'+version+'/img/profileicon/'+ inf.profileIconId+'.png'})
     .setDescription(elos.tier + ' ' + elos.rank)
     .addField('Vitorias / Derrotas', (elos.wins +' / '+ elos.losses), true)
     .addField('Total', ((elos.wins+elos.losses).toString()), true)
@@ -113,9 +114,9 @@ if (command === "flex" && args[0] != null) {
 
 if (command === "solo" && args[0] != null) {
   let nick = ArrumaNick(args);
-  let id = await pegaID(nick);
-  if(id =="bug"){message.reply("Jogador nao encontrado"); return;}
-  let elos = await pegaElo(id,false);
+  let inf = await pegaID(nick);
+  if(inf =="bug"){message.reply("Jogador nao encontrado"); return;}
+  let elos = await pegaElo(inf.id,false);
   
   let img = pegaFoto(elos);
 
@@ -126,7 +127,7 @@ if (command === "solo" && args[0] != null) {
     var md52 = md5.replace(/N/g, '-')
     var Tabela = new MessageEmbed()
     .setColor('#009911')
-    .setTitle(elos.summonerName)
+    .setAuthor({ name: elos.summonerName, iconURL: 'https://ddragon.leagueoflegends.com/cdn/'+version+'/img/profileicon/'+ inf.profileIconId+'.png'})
     .setDescription(elos.tier + ' ' + elos.rank)
     .addField('Vitorias / Derrotas', (elos.wins +' / '+ elos.losses), true)
     .addField('Total', ((elos.wins+elos.losses).toString()), true)
@@ -137,7 +138,7 @@ if (command === "solo" && args[0] != null) {
   }else{
     var Tabela = new MessageEmbed()
     .setColor('#009911')
-    .setTitle(elos.summonerName)
+    .setAuthor({ name: elos.summonerName, iconURL: 'https://ddragon.leagueoflegends.com/cdn/'+version+'/img/profileicon/'+ inf.profileIconId+'.png'})
     .setDescription(elos.tier + ' ' + elos.rank)
     .addField('Vitorias / Derrotas', (elos.wins +' / '+ elos.losses), true)
     .addField('Total', ((elos.wins+elos.losses).toString()), true)
@@ -178,7 +179,7 @@ async function pegaID(nome){
   var dados;
       let response = await axios.get('https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-name/'+nome+'?api_key='+config.API_TOKEN)
       .then(function (response) {
-        dados = response.data.id
+        dados = response.data
       })
       .catch(function (error) {
         dados = "bug"
@@ -336,13 +337,13 @@ async function Atualizacao(){
   var data = new Date();
   var hora =  data.getHours();
 console.log(hora);
-  if(hora !=12){ ativo=false}
+  if(hora !=12 && hora !=6 && hora !=18 && hora !=0){ ativo=false}
   var canal = client.channels.cache.get('792471661277741116');
   
-    if(timer == true  && hora==12 && ativo==false){
+    if(timer == true  && (hora==12 || hora ==6 || hora ==18 || hora ==0) && ativo==false){
       ativo= true;
-      let id = await pegaID('Rei%20dos%20reboco%200');
-      let elos = await pegaElo(id,false);
+      let inf = await pegaID('Rei%20dos%20reboco%200');
+      let elos = await pegaElo(inf.id,false);
       let img = pegaFoto(elos);
   
   
@@ -352,8 +353,8 @@ console.log(hora);
         var md52 = md5.replace(/N/g, '-')
         var Tabela = new MessageEmbed()
         .setColor('#009911')
-        .setTitle(elos.summonerName)
-        .setDescription(elos.tier + ' ' + elos.rank)
+        .setAuthor({ name: elos.summonerName, iconURL: 'https://ddragon.leagueoflegends.com/cdn/'+version+'/img/profileicon/'+ inf.profileIconId+'.png'})
+      .setDescription(elos.tier + ' ' + elos.rank)
         .addField('Vitorias / Derrotas', (elos.wins +' / '+ elos.losses), true)
         .addField('Total', ((elos.wins+elos.losses).toString()), true)
         .addField('Pontos', elos.leaguePoints.toString(), true)
@@ -363,8 +364,8 @@ console.log(hora);
       }else{
         var Tabela = new MessageEmbed()
         .setColor('#009911')
-        .setTitle(elos.summonerName)
-        .setDescription(elos.tier + ' ' + elos.rank)
+        .setAuthor({ name: elos.summonerName, iconURL: 'https://ddragon.leagueoflegends.com/cdn/'+version+'/img/profileicon/'+ inf.profileIconId+'.png'})
+      .setDescription(elos.tier + ' ' + elos.rank)
         .addField('Vitorias / Derrotas', (elos.wins +' / '+ elos.losses), true)
         .addField('Total', ((elos.wins+elos.losses).toString()), true)
         .addField('Pontos', elos.leaguePoints.toString(), true)
@@ -374,5 +375,11 @@ console.log(hora);
       canal.send({ embeds: [Tabela] });
 }
 }
+async function pegaVersao(){
+let response = await axios.get('https://ddragon.leagueoflegends.com/api/versions.json');
+let vers = response.data;
+version = vers[0];
+}
+
 
 client.login(config.BOT_TOKEN);
