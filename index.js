@@ -45,32 +45,7 @@ client.on("message", async function(message) {
     let elos = await pegaElo(inf.id,flex);
     let img = pegaFoto(elos);
 
-
-    if(elos.miniSeries !=null){
-      var pro = elos.miniSeries.progress.replace(/L/g, 'X');
-      var md5 = pro.replace(/W/g, 'V');
-      var md52 = md5.replace(/N/g, '-')
-      var Tabela = new MessageEmbed()
-      .setColor('#009911')
-      .setAuthor({ name: elos.summonerName, iconURL: 'https://ddragon.leagueoflegends.com/cdn/'+version+'/img/profileicon/'+ inf.profileIconId+'.png'})
-      .setDescription(elos.tier + ' ' + elos.rank)
-      .addField('Vitorias / Derrotas', (elos.wins +' / '+ elos.losses), true)
-      .addField('Total', ((elos.wins+elos.losses).toString()), true)
-      .addField('Pontos', elos.leaguePoints.toString(), true)
-      .setImage(img)
-      .setFooter({ text: 'MD5: '+ md52})
-
-    }else{
-      var Tabela = new MessageEmbed()
-      .setColor('#009911')
-      .setAuthor({ name: elos.summonerName, iconURL: 'https://ddragon.leagueoflegends.com/cdn/'+version+'/img/profileicon/'+ inf.profileIconId+'.png'})
-      .setDescription(elos.tier + ' ' + elos.rank)
-      .addField('Vitorias / Derrotas', (elos.wins +' / '+ elos.losses), true)
-      .addField('Total', ((elos.wins+elos.losses).toString()), true)
-      .addField('Pontos', elos.leaguePoints.toString(), true)
-      .setImage(img)
-    
-    }
+    var Tabela = montaTabela(elos,img,inf);
     message.reply({ embeds: [Tabela] });
   } 
 
@@ -80,35 +55,9 @@ if (command === "flex" && args[0] != null) {
   let inf = await pegaID(nick);
   if(inf =="bug"){message.reply("Jogador nao encontrado"); return;}
   let elos = await pegaElo(inf.id,true);
-
   let img = pegaFoto(elos);
 
-
-  if(elos.miniSeries !=null){
-    var pro = elos.miniSeries.progress.replace(/L/g, 'X');
-    var md5 = pro.replace(/W/g, 'V');
-    var md52 = md5.replace(/N/g, '-')
-    var Tabela = new MessageEmbed()
-    .setColor('#009911')
-    .setAuthor({ name: elos.summonerName, iconURL: 'https://ddragon.leagueoflegends.com/cdn/'+version+'/img/profileicon/'+ inf.profileIconId+'.png'})
-    .setDescription(elos.tier + ' ' + elos.rank)
-    .addField('Vitorias / Derrotas', (elos.wins +' / '+ elos.losses), true)
-    .addField('Total', ((elos.wins+elos.losses).toString()), true)
-    .addField('Pontos', elos.leaguePoints.toString(), true)
-    .setImage(img)
-    .setFooter({ text: 'MD5: '+ md52})
-
-  }else{
-    var Tabela = new MessageEmbed()
-    .setColor('#009911')
-    .setAuthor({ name: elos.summonerName, iconURL: 'https://ddragon.leagueoflegends.com/cdn/'+version+'/img/profileicon/'+ inf.profileIconId+'.png'})
-    .setDescription(elos.tier + ' ' + elos.rank)
-    .addField('Vitorias / Derrotas', (elos.wins +' / '+ elos.losses), true)
-    .addField('Total', ((elos.wins+elos.losses).toString()), true)
-    .addField('Pontos', elos.leaguePoints.toString(), true)
-    .setImage(img)
-  
-  }
+  var Tabela = montaTabela(elos,img,inf);
   message.reply({ embeds: [Tabela] });
 } 
 
@@ -117,38 +66,47 @@ if (command === "solo" && args[0] != null) {
   let inf = await pegaID(nick);
   if(inf =="bug"){message.reply("Jogador nao encontrado"); return;}
   let elos = await pegaElo(inf.id,false);
-  
   let img = pegaFoto(elos);
 
-
-  if(elos.miniSeries !=null){
-    var pro = elos.miniSeries.progress.replace(/L/g, 'X');
-    var md5 = pro.replace(/W/g, 'V');
-    var md52 = md5.replace(/N/g, '-')
-    var Tabela = new MessageEmbed()
-    .setColor('#009911')
-    .setAuthor({ name: elos.summonerName, iconURL: 'https://ddragon.leagueoflegends.com/cdn/'+version+'/img/profileicon/'+ inf.profileIconId+'.png'})
-    .setDescription(elos.tier + ' ' + elos.rank)
-    .addField('Vitorias / Derrotas', (elos.wins +' / '+ elos.losses), true)
-    .addField('Total', ((elos.wins+elos.losses).toString()), true)
-    .addField('Pontos', elos.leaguePoints.toString(), true)
-    .setImage(img)
-    .setFooter({ text: 'MD5: '+ md52})
-
-  }else{
-    var Tabela = new MessageEmbed()
-    .setColor('#009911')
-    .setAuthor({ name: elos.summonerName, iconURL: 'https://ddragon.leagueoflegends.com/cdn/'+version+'/img/profileicon/'+ inf.profileIconId+'.png'})
-    .setDescription(elos.tier + ' ' + elos.rank)
-    .addField('Vitorias / Derrotas', (elos.wins +' / '+ elos.losses), true)
-    .addField('Total', ((elos.wins+elos.losses).toString()), true)
-    .addField('Pontos', elos.leaguePoints.toString(), true)
-    .setImage(img)
-  
-  }
+  var Tabela = montaTabela(elos,img,inf);
   message.reply({ embeds: [Tabela] });
 } 
 ///////////////////////////////////////////////////////////////////////////////todos
+
+if(command ==="help"){
+  const Comandos = new Discord.MessageEmbed()
+  .setColor('#b700ff')
+  .setTitle('🔎 Comandos:')
+  .addField("Prefixo:", "`++`")
+  .addField("BUSCAR JOGADORES", "`solo (nome)` `flex (nome)`")
+  .addField("ELO BASTOS", "`bastos solo` `bastos flex`")
+  .addField("TOTAL DE RANKEDS", "`total (nome)`")
+  .addField("BUG OU SUGESTÃO", "`contato`")
+message.channel.send({ embeds: [Comandos] })
+}
+
+if(command ==="contato"){
+  message.author.send("Envie uma mensagem para: Flagar0#8642");
+}
+
+if (command === "total" && args[0] != null) {
+  let nick = ArrumaNick(args);
+  let inf = await pegaID(nick);
+  if(inf =="bug"){message.reply("Jogador nao encontrado"); return;}
+  let response = await axios.get('https://br1.api.riotgames.com/lol/league/v4/entries/by-summoner/'+inf.id+'?api_key='+config.API_TOKEN)
+  let rankeds = response.data
+  if(rankeds[1]==undefined){
+    var elosFlex = rankeds[0]; var total =(elosFlex.wins+elosFlex.losses);}
+  else{
+    var elosFlex = rankeds[0];
+    var elosSolo = rankeds[1];
+    var total = (elosSolo.wins+elosSolo.losses) + (elosFlex.wins+elosFlex.losses);
+  }
+
+  
+
+  message.reply("Total de rankeds de "+ elosFlex.summonerName+" é: "+total.toString());
+} 
 
 if (command === "timer") {
   switch(args[0]){
@@ -166,10 +124,6 @@ if (command === "timer") {
       return;
   }
 }
-
-
-
-
 });
 
 
@@ -346,39 +300,44 @@ console.log(hora);
       let elos = await pegaElo(inf.id,false);
       let img = pegaFoto(elos);
   
-  
-      if(elos.miniSeries !=null){
-        var pro = elos.miniSeries.progress.replace(/L/g, 'X');
-        var md5 = pro.replace(/W/g, 'V');
-        var md52 = md5.replace(/N/g, '-')
-        var Tabela = new MessageEmbed()
-        .setColor('#009911')
-        .setAuthor({ name: elos.summonerName, iconURL: 'https://ddragon.leagueoflegends.com/cdn/'+version+'/img/profileicon/'+ inf.profileIconId+'.png'})
-      .setDescription(elos.tier + ' ' + elos.rank)
-        .addField('Vitorias / Derrotas', (elos.wins +' / '+ elos.losses), true)
-        .addField('Total', ((elos.wins+elos.losses).toString()), true)
-        .addField('Pontos', elos.leaguePoints.toString(), true)
-        .setImage(img)
-        .setFooter({ text: 'MD5: '+ md52})
-  
-      }else{
-        var Tabela = new MessageEmbed()
-        .setColor('#009911')
-        .setAuthor({ name: elos.summonerName, iconURL: 'https://ddragon.leagueoflegends.com/cdn/'+version+'/img/profileicon/'+ inf.profileIconId+'.png'})
-      .setDescription(elos.tier + ' ' + elos.rank)
-        .addField('Vitorias / Derrotas', (elos.wins +' / '+ elos.losses), true)
-        .addField('Total', ((elos.wins+elos.losses).toString()), true)
-        .addField('Pontos', elos.leaguePoints.toString(), true)
-        .setImage(img)
+      var Tabela = montaTabela(elos,img,inf);
       
-      }
       canal.send({ embeds: [Tabela] });
 }
 }
+
 async function pegaVersao(){
 let response = await axios.get('https://ddragon.leagueoflegends.com/api/versions.json');
 let vers = response.data;
 version = vers[0];
+}
+
+function montaTabela(elos,img,inf){
+  if(elos.miniSeries !=null){
+    var pro = elos.miniSeries.progress.replace(/L/g, 'X');
+    var md5 = pro.replace(/W/g, 'V');
+    var md52 = md5.replace(/N/g, '-')
+    var Tabela1 = new MessageEmbed()
+    .setColor('#009911')
+    .setAuthor({ name: elos.summonerName, iconURL: 'https://ddragon.leagueoflegends.com/cdn/'+version+'/img/profileicon/'+ inf.profileIconId+'.png'})
+  .setDescription(elos.tier + ' ' + elos.rank)
+    .addField('Vitorias / Derrotas', (elos.wins +' / '+ elos.losses), true)
+    .addField('Total', ((elos.wins+elos.losses).toString()), true)
+    .addField('Pontos', elos.leaguePoints.toString(), true)
+    .setImage(img)
+    .setFooter({ text: 'MD5: '+ md52})
+
+  }else{
+    var Tabela1 = new MessageEmbed()
+    .setColor('#009911')
+    .setAuthor({ name: elos.summonerName, iconURL: 'https://ddragon.leagueoflegends.com/cdn/'+version+'/img/profileicon/'+ inf.profileIconId+'.png'})
+  .setDescription(elos.tier + ' ' + elos.rank)
+    .addField('Vitorias / Derrotas', (elos.wins +' / '+ elos.losses), true)
+    .addField('Total', ((elos.wins+elos.losses).toString()), true)
+    .addField('Pontos', elos.leaguePoints.toString(), true)
+    .setImage(img)
+  }
+  return Tabela1;
 }
 
 
