@@ -8,6 +8,8 @@ var timer=true;
 var minutos=20;
 var ativo=false;
 var version;
+var rkdsBastos = 0;
+var rkdsBastos_old =1;
 
 const client = new Discord.Client({
     intents: [
@@ -53,23 +55,26 @@ client.on("message", async function(message) {
 if (command === "flex" && args[0] != null) {
   let nick = ArrumaNick(args);
   let inf = await pegaID(nick);
-  if(inf =="bug"){message.reply("Jogador nao encontrado"); return;}
-  let elos = await pegaElo(inf.id,true);
-  let img = pegaFoto(elos);
-
-  var Tabela = montaTabela(elos,img,inf);
-  message.reply({ embeds: [Tabela] });
+  if(inf =="bug"){message.reply("Jogador nao encontrado"); return;}else{
+    let elos = await pegaElo(inf.id,true);
+    let img = pegaFoto(elos);
+  
+    var Tabela = montaTabela(elos,img,inf);
+    message.reply({ embeds: [Tabela] });
+  }
 } 
 
 if (command === "solo" && args[0] != null) {
   let nick = ArrumaNick(args);
   let inf = await pegaID(nick);
-  if(inf =="bug"){message.reply("Jogador nao encontrado"); return;}
-  let elos = await pegaElo(inf.id,false);
-  let img = pegaFoto(elos);
-
-  var Tabela = montaTabela(elos,img,inf);
-  message.reply({ embeds: [Tabela] });
+  if(inf =="bug"){message.reply("Jogador nao encontrado"); return;}else{
+    let elos = await pegaElo(inf.id,false);
+    let img = pegaFoto(elos);
+  
+    var Tabela = montaTabela(elos,img,inf);
+    message.reply({ embeds: [Tabela] });
+  }
+  
 } 
 ///////////////////////////////////////////////////////////////////////////////todos
 
@@ -92,7 +97,7 @@ if(command ==="contato"){
 if (command === "total" && args[0] != null) {
   let nick = ArrumaNick(args);
   let inf = await pegaID(nick);
-  if(inf =="bug"){message.reply("Jogador nao encontrado"); return;}
+  if(inf =="bug"){message.reply("Jogador nao encontrado"); return;}else{
   let response = await axios.get('https://br1.api.riotgames.com/lol/league/v4/entries/by-summoner/'+inf.id+'?api_key='+config.API_TOKEN)
   let rankeds = response.data
   if(rankeds[1]==undefined){
@@ -106,6 +111,7 @@ if (command === "total" && args[0] != null) {
   
 
   message.reply("Total de rankeds de "+ elosFlex.summonerName+" é: "+total.toString());
+}
 } 
 
 if (command === "timer") {
@@ -154,12 +160,20 @@ async function pegaElo(id,flex){
     return dados[0];
   } else if(flex == false && dados[1].queueType === "RANKED_SOLO_5x5"){
     return dados[1];
+  }else if(flex == false && dados[2].queueType === "RANKED_SOLO_5x5"){
+    return dados[2];
+  }else if(flex == false && dados[3].queueType === "RANKED_SOLO_5x5"){
+    return dados[3];
   }
 
   if(flex == true && dados[0].queueType === "RANKED_FLEX_SR"){
     return dados[0];
   } else if(flex == true && dados[1].queueType === "RANKED_FLEX_SR"){
     return dados[1];
+  }else if(flex == true && dados[2].queueType === "RANKED_FLEX_SR"){
+    return dados[2];
+  }else if(flex == true && dados[3].queueType === "RANKED_FLEX_SR"){
+    return dados[3];
   }
 }
 
@@ -293,14 +307,17 @@ async function Atualizacao(){
 console.log(hora);
   if(hora !=12 && hora !=6 && hora !=18 && hora !=0){ ativo=false}
   var canal = client.channels.cache.get('792471661277741116');
+  let inf = await pegaID('Rei%20dos%20reboco%200');
+  let elos = await pegaElo(inf.id,false);
+  rkdsBastos=(elos.wins+elos.losses)
   
-    if(timer == true  && (hora==12 || hora ==6 || hora ==18 || hora ==0) && ativo==false){
+    if(timer == true  && (hora==12 || hora ==6 || hora ==18 || hora ==0) && ativo==false &&(rkdsBastos!=rkdsBastos_old)) {
       ativo= true;
-      let inf = await pegaID('Rei%20dos%20reboco%200');
-      let elos = await pegaElo(inf.id,false);
+      
       let img = pegaFoto(elos);
   
       var Tabela = montaTabela(elos,img,inf);
+      rkdsBastos_old = (elos.wins+elos.losses)
       
       canal.send({ embeds: [Tabela] });
 }
